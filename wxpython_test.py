@@ -1,4 +1,3 @@
-
 import wx
 class MouseEventFrame(wx.Frame):
     def __init__(self, parent,id):
