@@ -1,20 +1,26 @@
 import wx
 class BoxSizerFrame(wx.Frame):
     def __init__(self, parent, *args, **kwargs):
-        super(BoxSizerFrame, self).__init__(*args, **kwargs)
-        # Attributes
+        '''
+          初始化时，要注意入口参数，这里参数有parent,但是在初始化时，没有使用parent,导致出错，但是Pycharm没有抱错。
+        '''
+        super(BoxSizerFrame, self).__init__(parent,*args, **kwargs)
+        '''
+        也可以采用下面这种方式进行初始化
+       '''
+        #wx.Frame.__init__(self,parent,*args,**kwargs)
         self.panel = BoxSizerPanel(parent=self)
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.panel, 1, wx.EXPAND)
+        sizer.Add(self.panel, proportion = 1 ,border = 2)
         self.SetSizer(sizer)
-        #self.SetInitialSize()   # 这个函数在库中没有
-        self.Show()
+
+
 
 
 class BoxSizerPanel(wx.Panel):
     def __init__(self, parent, *args, **kwargs):
-        super(BoxSizerPanel, self).__init__(*args, **kwargs)
+        super(BoxSizerPanel, self).__init__(parent,*args, **kwargs)
         # Attributes
         self._field1 = wx.TextCtrl(self)
         self._field2 = wx.TextCtrl(self)
@@ -23,7 +29,6 @@ class BoxSizerPanel(wx.Panel):
 
     def _DoLayout(self):
         """Layout the controls"""
-
         vsizer = wx.BoxSizer(wx.VERTICAL)
         field1_sz = wx.BoxSizer(wx.HORIZONTAL)
         field2_sz = wx.BoxSizer(wx.HORIZONTAL)
@@ -32,29 +37,32 @@ class BoxSizerPanel(wx.Panel):
         field2_lbl = wx.StaticText(self, label="Field 2:")
         # Make the first row by adding the label and field
         # to the first horizontal sizer
-        field1_sz.AddSpacer(50)
-        field1_sz.Add(field1_lbl)
-        field1_sz.AddSpacer(5)  # put 5px of space between
-        field1_sz.Add(self._field1)
-        field1_sz.AddSpacer(50)
+
+        field1_sz.Add(field1_lbl,flag = wx.ALIGN_CENTER_VERTICAL | wx.RIGHT,border = 4)
+
+        field1_sz.Add(self._field1,proportion = 1, flag = wx.ALIGN_CENTER_VERTICAL|wx.RIGHT,border = 4)
+
+
         # Do the same for the second row
-        field2_sz.AddSpacer(50)
-        field2_sz.Add(field2_lbl)
-        field2_sz.AddSpacer(5)
-        field2_sz.Add(self._field2)
-        field2_sz.AddSpacer(50)
+
+        field2_sz.Add(field2_lbl,wx.ALIGN_CENTER_VERTICAL|wx.RIGHT,border = 4)
+
+        field2_sz.Add(self._field2,proportion = 1, flag = wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.BOTTOM,border = 4)
+
         # Now finish the layout by adding the two sizers
         # to the main vertical sizer.
-        vsizer.AddSpacer(50)
-        vsizer.Add(field1_sz)
-        vsizer.AddSpacer(15)
-        vsizer.Add(field2_sz)
-        vsizer.AddSpacer(50)
+        #vsizer.AddStretchSpacer()
+        vsizer.Add(field1_sz,proportion = 0,flag = wx.ALL,border = 5)
+
+        vsizer.Add(field2_sz,proportion = 0,flag = wx.ALL,border = 5)
+
+        #vsizer.AddStretchSpacer()
+
         # Finally assign the main outer sizer to the panel
         self.SetSizer(vsizer)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app = wx.App()
     frame = BoxSizerFrame(parent=None)
     frame.Show()
